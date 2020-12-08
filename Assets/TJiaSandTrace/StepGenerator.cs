@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-public class StepGenerator : MonoBehaviour {
-
+public class StepGenerator : MonoBehaviour
+{
     public RenderTexture StepRT;
     public RenderTexture mTmpRT;
     public Material StepMat;
 
     private Vector3 LastPlayerPos;
-	void OnEnable () {
+
+    void OnEnable()
+    {
         mTmpRT = RenderTexture.GetTemporary(StepRT.descriptor);
         LastPlayerPos = transform.position;
-
     }
 
     void OnDisable()
@@ -22,8 +23,9 @@ public class StepGenerator : MonoBehaviour {
         mTmpRT = null;
         Graphics.Blit(mTmpRT, StepRT, StepMat, 1);
     }
-	
-	void Update () {
+
+    void Update()
+    {
         Shader.SetGlobalVector("_PlayerPos", transform.position);
         if (Vector3.Distance(transform.position, LastPlayerPos) > 0.001f)
         {
@@ -32,5 +34,5 @@ public class StepGenerator : MonoBehaviour {
             Graphics.Blit(mTmpRT, StepRT, StepMat, 0);
             LastPlayerPos = transform.position;
         }
-	}
+    }
 }
