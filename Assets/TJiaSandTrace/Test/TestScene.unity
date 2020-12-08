@@ -198,8 +198,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534669902}
-  m_LocalRotation: {x: 0.5678326, y: -0.007408055, z: 0.0051106336, w: 0.8230949}
-  m_LocalPosition: {x: 0.9604672, y: 18.830143, z: -6.258276}
+  m_LocalRotation: {x: 0.575128, y: -0.015946394, z: 0.011214513, w: 0.8178311}
+  m_LocalPosition: {x: -1.6226808, y: 7.8319454, z: -2.2378917}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -349,8 +349,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _leftFootPrintBump: {fileID: 2800000, guid: 14f828b93711e324ba7a7db5cc90bcf6, type: 3}
-  _rightFootPrintBump: {fileID: 2800000, guid: 14f828b93711e324ba7a7db5cc90bcf6, type: 3}
-  _footPrintBumpScale: 16
+  _footPrintBumpScale: 1
   _footPrintSize: 0.5
   _worldSize: 20
   _textureSize: 1024
@@ -585,7 +584,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _leftFootPrintBump: {fileID: 0}
-  _rightFootPrintBump: {fileID: 0}
   _footPrintBumpScale: 8
   _footPrintSize: 1
   _worldSize: 20

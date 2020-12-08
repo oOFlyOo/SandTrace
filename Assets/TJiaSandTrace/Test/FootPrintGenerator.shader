@@ -90,11 +90,12 @@
             float4 _MainTex_ST;
 
             sampler2D _FootPrintBump;
+            half _IsLeftFoot;
 
             half _FootPrintSize;
             half _WorldSize;
             float3 _DeltaFootPosition;
-            // half _YDegress;
+            half _YDegress;
             float4x4 _RotationFootPrint;
             // float3 _WorldPosition;
             // float3 _DeltaWorldPosition;
@@ -125,16 +126,22 @@
 
                 // 算出该点在脚印上的uv
                 float2 uv = (i.uv - 0.5 - _DeltaFootPosition.xz / _WorldSize) * _WorldSize / _FootPrintSize + 0.5;
-
+                
+                // 根据脚朝向旋转
                 uv = uv - 0.5;
                 // uv = RotateAroundYInDegrees(uv, _YDegress);
                 uv = mul((float2x2)_RotationFootPrint, uv);
                 uv = uv + 0.5;
                 
+                // 左右脚互换
+                uv.x = uv.x * _IsLeftFoot + (1 - _IsLeftFoot) * (1 - uv.x);
+                
                 // 暂不考虑朝向
                 half4 footPrint = tex2D(_FootPrintBump, uv);
                 // 反向脚印的法线，即将xy反向，可以推导出来
-                footPrint.rg = 1 - footPrint.rg;
+                // footPrint.rg = 1 - footPrint.rg;
+                // // 左右脚互换
+                // footPrint.r = footPrint.r * _IsLeftFoot + (1 - footPrint.r) * (1 - _IsLeftFoot);
                 half2 footUVCheck = step(0.001, uv) * step(uv, 0.999);
                 footPrint *= footUVCheck.x * footUVCheck.y;
                 

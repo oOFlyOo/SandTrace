@@ -24,7 +24,7 @@ public class FootPrint : MonoBehaviour
     /// 脚印法线贴图，A通道是影响范围，0为不影响
     /// </summary>
     [SerializeField] private Texture _leftFootPrintBump;
-    [SerializeField] private Texture _rightFootPrintBump;
+    // [SerializeField] private Texture _rightFootPrintBump;
     [SerializeField] private float _footPrintBumpScale = 8; 
     
     [SerializeField] private float _footPrintSize = 1;
@@ -60,7 +60,7 @@ public class FootPrint : MonoBehaviour
         
         _dstRenderTexture = RenderTexture.GetTemporary(_srcRenderTexture.descriptor);
         // Shader.SetGlobalTexture("_FootPrintTrace", _dstRenderTexture);
-        // Shader.SetGlobalTexture("_FootPrintBump", _footPrintBump);
+        Shader.SetGlobalTexture("_FootPrintBump", _leftFootPrintBump);
 
         _cacheTransform = transform;
         _lastWorldPosition = transform.position;
@@ -111,10 +111,14 @@ public class FootPrint : MonoBehaviour
 
     public void FootPrintActive(Vector3 worldPos,  float yDegress, Foot foot)
     {
+        yDegress = Mathf.Repeat(yDegress, 360);
+        
         Shader.SetGlobalFloat("_FootPrintBumpScale", _footPrintBumpScale);
         Shader.SetGlobalFloat("_FootPrintSize", _footPrintSize);
         Shader.SetGlobalVector("_DeltaFootPosition", worldPos - worldPos);
         Shader.SetGlobalFloat("_YDegress", yDegress);
+        
+        // Debug.Log(yDegress);
         
         var alpha = yDegress * Mathf.PI / 180.0f;
         var sina = Mathf.Sin(alpha);
@@ -128,7 +132,8 @@ public class FootPrint : MonoBehaviour
         };
         Shader.SetGlobalMatrix("_RotationFootPrint", matrix);
         
-        Shader.SetGlobalTexture("_FootPrintBump", foot == Foot.Left ? _leftFootPrintBump : _rightFootPrintBump);
+        Shader.SetGlobalInt("_IsLeftFoot", foot == Foot.Left ? 1 : 0);
+        // Shader.SetGlobalTexture("_FootPrintBump", foot == Foot.Left ? _leftFootPrintBump : _rightFootPrintBump);
         
         // Graphics.Blit(_srcRenderTexture, _dstRenderTexture, _footPrintMaterial, (int)FootPrintPass.Generator);
         // Graphics.Blit(_dstRenderTexture, _srcRenderTexture);
