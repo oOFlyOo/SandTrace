@@ -11,6 +11,60 @@
             "RenderType"="Opaque"
         }
         LOD 100
+        
+        Pass //Trace Move
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+
+            #include "UnityCG.cginc"
+
+            struct appdata
+            {
+                float4 vertex : POSITION;
+                float2 uv : TEXCOORD0;
+            };
+
+            struct v2f
+            {
+                float2 uv : TEXCOORD0;
+                float4 vertex : SV_POSITION;
+            };
+
+            sampler2D _MainTex;
+            float4 _MainTex_ST;
+
+            half _WorldSize;
+            half _FootPrintAtten;
+            float3 _DeltaWorldPosition;
+
+            v2f vert(appdata v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv = TRANSFORM_TEX(v.uv, _MainTex);
+                return o;
+            }
+
+            fixed4 frag(v2f i) : SV_Target
+            {
+                float3 deltaPos = _DeltaWorldPosition;
+                float2 deltaUV = deltaPos.xz / _WorldSize;
+                float2 lastUV = i.uv - deltaUV;
+                // 上一步的信息
+                half4 lastPrintTrace = tex2D(_MainTex, lastUV);
+                // 脚印变浅
+                lastPrintTrace.a -= _FootPrintAtten;
+                
+                // 边缘计算
+                half2 lastFootPrints = step(0.001, i.uv) * step(i.uv, 0.999);
+                lastPrintTrace *= lastFootPrints.x * lastFootPrints.y;
+                
+                return lastPrintTrace;
+            }
+            ENDCG
+        }
 
         Pass //Trace Generation
         {
@@ -39,9 +93,10 @@
 
             half _FootPrintSize;
             half _WorldSize;
-            half _FootPrintAtten;
-            float3 _WorldPosition;
-            float3 _DeltaWorldPosition;
+            float3 _DeltaFootPosition;
+            half _YDegress;
+            // float3 _WorldPosition;
+            // float3 _DeltaWorldPosition;
 
             v2f vert(appdata v)
             {
@@ -51,35 +106,44 @@
                 return o;
             }
 
+            float3 RotateAroundYInDegrees (float3 vertex, float degrees)
+            {
+                float alpha = degrees * UNITY_PI / 180.0;
+                float sina, cosa;
+                sincos(alpha, sina, cosa);
+                float2x2 m = float2x2(cosa, -sina, sina, cosa);
+                return float3(mul(m, vertex.xz), vertex.y).xzy;
+            }
+
             fixed4 frag(v2f i) : SV_Target
             {
-                float3 deltaPos = _DeltaWorldPosition;
-                float2 deltaUV = deltaPos.xz / _WorldSize;
-                float2 lastUV = i.uv - deltaUV;
+                float2 lastUV = i.uv;
                 // 上一步的信息
                 half4 lastPrintTrace = tex2D(_MainTex, lastUV);
-                // 边缘计算
-                half2 lastFootPrints = step(0, lastUV) * step(lastUV, 1);
-                lastPrintTrace *= lastFootPrints.x * lastFootPrints.y;
-                // 脚印变浅
-                lastPrintTrace.a -= _FootPrintAtten;
 
                 // 算出该点在脚印上的uv
-                float2 uv = (i.uv - 0.5) * _WorldSize / _FootPrintSize + 0.5;
+                float2 uv = (i.uv - 0.5 - _DeltaFootPosition.xz / _WorldSize) * _WorldSize / _FootPrintSize + 0.5;
+
+                uv = uv - 0.5;
+                uv = RotateAroundYInDegrees(float3(uv.x, 0, uv.y), _YDegress).xz;
+                uv = uv + 0.5;
+                
                 // 暂不考虑朝向
                 half4 footPrint = tex2D(_FootPrintBump, uv);
                 // 反向脚印的法线，即将xy反向，可以推导出来
                 footPrint.rg = 1 - footPrint.rg;
-
+                half2 footUVCheck = step(0.001, uv) * step(uv, 0.999);
+                footPrint *= footUVCheck.x * footUVCheck.y;
+                
                 half4 col = footPrint;
                 // 深的位置决定最后的效果
                 half stepDeep = step(lastPrintTrace.a, col.a);
                 col.a = max(lastPrintTrace.a, col.a);
                 col.rgb = col.rgb * stepDeep + lastPrintTrace.rgb * (1 - stepDeep);
 
-                // 边缘检测
-                half2 uvCheck = step(0.01, i.uv) * step(i.uv, 0.99);
-                col.a *= uvCheck.x * uvCheck.y;
+                // // 边缘检测
+                // half2 uvCheck = step(0.01, i.uv) * step(i.uv, 0.99);
+                // col.a *= uvCheck.x * uvCheck.y;
 
                 return col;
             }

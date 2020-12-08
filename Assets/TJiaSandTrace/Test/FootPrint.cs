@@ -9,14 +9,22 @@ public class FootPrint : MonoBehaviour
     private const string FootPrintShaderName = "WWFramework/FootPrintGenerator";
     private enum FootPrintPass
     {
-        Generator = 0,
-        Clear = 1,
+        Move,
+        Generator,
+        Clear
+    }
+
+    public enum Foot
+    {
+        Left,
+        Right
     }
 
     /// <summary>
     /// 脚印法线贴图，A通道是影响范围，0为不影响
     /// </summary>
-    [SerializeField] private Texture _footPrintBump;
+    [SerializeField] private Texture _leftFootPrintBump;
+    [SerializeField] private Texture _rightFootPrintBump;
     [SerializeField] private float _footPrintBumpScale = 8; 
     
     [SerializeField] private float _footPrintSize = 1;
@@ -51,7 +59,7 @@ public class FootPrint : MonoBehaviour
         _dstRenderTexture = RenderTexture.GetTemporary(_srcRenderTexture.descriptor);
         Shader.SetGlobalTexture("_FootPrintTrace", _dstRenderTexture);
         
-        Shader.SetGlobalTexture("_FootPrintBump", _footPrintBump);
+        // Shader.SetGlobalTexture("_FootPrintBump", _footPrintBump);
 
         _cacheTransform = transform;
         _lastWorldPosition = transform.position;
@@ -83,18 +91,30 @@ public class FootPrint : MonoBehaviour
         }
         var curPos = _cacheTransform.position;
 
-        Shader.SetGlobalFloat("_FootPrintBumpScale", _footPrintBumpScale);
-        Shader.SetGlobalFloat("_FootPrintSize", _footPrintSize);
         Shader.SetGlobalInt("_WorldSize", _worldSize);
         Shader.SetGlobalFloat("_FootPrintAtten", _footPrintAtten * _curDuration);
         Shader.SetGlobalVector("_WorldPosition", curPos);
         Shader.SetGlobalVector("_DeltaWorldPosition", _lastWorldPosition - curPos);
-        Shader.SetGlobalTexture("_FootPrintTex", _dstRenderTexture);
 
-        Graphics.Blit(_srcRenderTexture, _dstRenderTexture, _footPrintMaterial, (int)FootPrintPass.Generator);
+        Graphics.Blit(_srcRenderTexture, _dstRenderTexture, _footPrintMaterial, (int)FootPrintPass.Move);
         Graphics.Blit(_dstRenderTexture, _srcRenderTexture);
+        
+        // FootPrintActive(curPos);
         
         _curDuration = 0;
         _lastWorldPosition = curPos;
+    }
+
+    public void FootPrintActive(Vector3 worldPos,  float yDegress, Foot foot)
+    {
+        Shader.SetGlobalFloat("_FootPrintBumpScale", _footPrintBumpScale);
+        Shader.SetGlobalFloat("_FootPrintSize", _footPrintSize);
+        Shader.SetGlobalVector("_DeltaFootPosition", worldPos - worldPos);
+        Shader.SetGlobalFloat("_YDegress", yDegress);
+        
+        Shader.SetGlobalTexture("_FootPrintBump", foot == Foot.Left ? _leftFootPrintBump : _rightFootPrintBump);
+        
+        Graphics.Blit(_srcRenderTexture, _dstRenderTexture, _footPrintMaterial, (int)FootPrintPass.Generator);
+        Graphics.Blit(_dstRenderTexture, _srcRenderTexture);
     }
 }

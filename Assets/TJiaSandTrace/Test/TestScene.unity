@@ -198,8 +198,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 534669902}
-  m_LocalRotation: {x: -0.4214129, y: 0.44119883, z: -0.24696739, w: -0.752836}
-  m_LocalPosition: {x: 6.9252167, y: 13.94153, z: -3.879117}
+  m_LocalRotation: {x: 0.5678326, y: -0.007408055, z: 0.0051106336, w: 0.8230949}
+  m_LocalPosition: {x: 0.9604672, y: 18.830143, z: -6.258276}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -309,6 +309,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 48.3, y: 96.68, z: 0}
+--- !u!1 &829878217 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 993986887, guid: a1f4c8da0d4c6f44a90c74605bf67640,
+    type: 3}
+  m_PrefabInstance: {fileID: 1881641476}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &829878221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 829878217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ddee351fd7dff84d95edcc4aefc3eb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _foot: 1
+  _footPrint: {fileID: 945986708}
+  _hitTerrainBias: 0.01
 --- !u!1 &945986699 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3784709816681675569, guid: a1f4c8da0d4c6f44a90c74605bf67640,
@@ -327,11 +348,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0604ea5aec3f574197e5e9fc29d20dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _footPrintBump: {fileID: 2800000, guid: a941dd4f50e1d1b4f929b2c64487d33c, type: 3}
-  _footPrintBumpScale: 8
+  _leftFootPrintBump: {fileID: 2800000, guid: 14f828b93711e324ba7a7db5cc90bcf6, type: 3}
+  _rightFootPrintBump: {fileID: 2800000, guid: 14f828b93711e324ba7a7db5cc90bcf6, type: 3}
+  _footPrintBumpScale: 16
   _footPrintSize: 1
-  _worldSize: 40
-  _textureSize: 512
+  _worldSize: 20
+  _textureSize: 1024
   _footPrintAtten: 0.1
   _duration: 0.1
   _srcRenderTexture: {fileID: 0}
@@ -350,7 +372,7 @@ GameObject:
   - component: {fileID: 978685970}
   m_Layer: 0
   m_Name: Plane
-  m_TagString: Untagged
+  m_TagString: Terrain
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -430,6 +452,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1378014241 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1392182897, guid: a1f4c8da0d4c6f44a90c74605bf67640,
+    type: 3}
+  m_PrefabInstance: {fileID: 1881641476}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1378014245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1378014241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ddee351fd7dff84d95edcc4aefc3eb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _foot: 0
+  _footPrint: {fileID: 945986708}
+  _hitTerrainBias: 0.01
 --- !u!1 &1398560037
 GameObject:
   m_ObjectHideFlags: 0
@@ -541,7 +584,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0604ea5aec3f574197e5e9fc29d20dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _footPrintBump: {fileID: 2800000, guid: a941dd4f50e1d1b4f929b2c64487d33c, type: 3}
+  _leftFootPrintBump: {fileID: 0}
+  _rightFootPrintBump: {fileID: 0}
   _footPrintBumpScale: 8
   _footPrintSize: 1
   _worldSize: 20
