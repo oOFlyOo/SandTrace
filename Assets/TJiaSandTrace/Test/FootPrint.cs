@@ -46,6 +46,8 @@ public class FootPrint : MonoBehaviour
     private Transform _cacheTransform;
     private Vector3 _lastWorldPosition;
 
+    private bool _isUseScrTexture = true;
+
     private void OnEnable()
     {
         _footPrintMaterial = new Material(Shader.Find(FootPrintShaderName));
@@ -57,8 +59,7 @@ public class FootPrint : MonoBehaviour
         Graphics.Blit(null, _srcRenderTexture, _footPrintMaterial, (int)FootPrintPass.Clear);
         
         _dstRenderTexture = RenderTexture.GetTemporary(_srcRenderTexture.descriptor);
-        Shader.SetGlobalTexture("_FootPrintTrace", _dstRenderTexture);
-        
+        // Shader.SetGlobalTexture("_FootPrintTrace", _dstRenderTexture);
         // Shader.SetGlobalTexture("_FootPrintBump", _footPrintBump);
 
         _cacheTransform = transform;
@@ -96,8 +97,11 @@ public class FootPrint : MonoBehaviour
         Shader.SetGlobalVector("_WorldPosition", curPos);
         Shader.SetGlobalVector("_DeltaWorldPosition", _lastWorldPosition - curPos);
 
-        Graphics.Blit(_srcRenderTexture, _dstRenderTexture, _footPrintMaterial, (int)FootPrintPass.Move);
-        Graphics.Blit(_dstRenderTexture, _srcRenderTexture);
+        // Graphics.Blit(_srcRenderTexture, _dstRenderTexture, _footPrintMaterial, (int)FootPrintPass.Move);
+        // Graphics.Blit(_dstRenderTexture, _srcRenderTexture);
+
+        SwitchRenderTexture(out var srcRT, out var dstRT);
+        Graphics.Blit(srcRT, dstRT, _footPrintMaterial, (int)FootPrintPass.Move);
         
         // FootPrintActive(curPos);
         
@@ -126,7 +130,24 @@ public class FootPrint : MonoBehaviour
         
         Shader.SetGlobalTexture("_FootPrintBump", foot == Foot.Left ? _leftFootPrintBump : _rightFootPrintBump);
         
-        Graphics.Blit(_srcRenderTexture, _dstRenderTexture, _footPrintMaterial, (int)FootPrintPass.Generator);
-        Graphics.Blit(_dstRenderTexture, _srcRenderTexture);
+        // Graphics.Blit(_srcRenderTexture, _dstRenderTexture, _footPrintMaterial, (int)FootPrintPass.Generator);
+        // Graphics.Blit(_dstRenderTexture, _srcRenderTexture);
+        
+        SwitchRenderTexture(out var srcRT, out var dstRT);
+        Graphics.Blit(srcRT, dstRT, _footPrintMaterial, (int)FootPrintPass.Generator);
+    }
+
+    /// <summary>
+    /// 优化切换贴图性能
+    /// </summary>
+    /// <param name="srcRT"></param>
+    /// <param name="dstRT"></param>
+    private void SwitchRenderTexture(out RenderTexture srcRT, out RenderTexture dstRT)
+    {
+        _isUseScrTexture = !_isUseScrTexture;
+        srcRT = _isUseScrTexture ? _dstRenderTexture : _srcRenderTexture;
+        dstRT = _isUseScrTexture ? _srcRenderTexture : _dstRenderTexture;
+        
+        Shader.SetGlobalTexture("_FootPrintTrace", dstRT);
     }
 }
