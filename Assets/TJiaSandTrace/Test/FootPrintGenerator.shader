@@ -94,7 +94,8 @@
             half _FootPrintSize;
             half _WorldSize;
             float3 _DeltaFootPosition;
-            half _YDegress;
+            // half _YDegress;
+            float4x4 _RotationFootPrint;
             // float3 _WorldPosition;
             // float3 _DeltaWorldPosition;
 
@@ -126,7 +127,8 @@
                 float2 uv = (i.uv - 0.5 - _DeltaFootPosition.xz / _WorldSize) * _WorldSize / _FootPrintSize + 0.5;
 
                 uv = uv - 0.5;
-                uv = RotateAroundYInDegrees(uv, _YDegress);
+                // uv = RotateAroundYInDegrees(uv, _YDegress);
+                uv = mul((float2x2)_RotationFootPrint, uv);
                 uv = uv + 0.5;
                 
                 // 暂不考虑朝向

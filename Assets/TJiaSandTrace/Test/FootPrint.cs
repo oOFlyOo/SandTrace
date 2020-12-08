@@ -112,6 +112,18 @@ public class FootPrint : MonoBehaviour
         Shader.SetGlobalVector("_DeltaFootPosition", worldPos - worldPos);
         Shader.SetGlobalFloat("_YDegress", yDegress);
         
+        var alpha = yDegress * Mathf.PI / 180.0f;
+        var sina = Mathf.Sin(alpha);
+        var cosa = Mathf.Cos(alpha);
+        Matrix4x4 matrix = new Matrix4x4()
+        {
+            m00 = cosa,
+            m01 = -sina,
+            m10 = sina,
+            m11 = cosa,
+        };
+        Shader.SetGlobalMatrix("_RotationFootPrint", matrix);
+        
         Shader.SetGlobalTexture("_FootPrintBump", foot == Foot.Left ? _leftFootPrintBump : _rightFootPrintBump);
         
         Graphics.Blit(_srcRenderTexture, _dstRenderTexture, _footPrintMaterial, (int)FootPrintPass.Generator);
