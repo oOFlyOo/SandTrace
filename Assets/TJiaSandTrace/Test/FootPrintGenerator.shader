@@ -106,13 +106,14 @@
                 return o;
             }
 
-            float3 RotateAroundYInDegrees (float3 vertex, float degrees)
+            float2 RotateAroundYInDegrees (float2 uv, float degrees)
             {
                 float alpha = degrees * UNITY_PI / 180.0;
                 float sina, cosa;
                 sincos(alpha, sina, cosa);
                 float2x2 m = float2x2(cosa, -sina, sina, cosa);
-                return float3(mul(m, vertex.xz), vertex.y).xzy;
+
+                return mul(m, uv);
             }
 
             fixed4 frag(v2f i) : SV_Target
@@ -125,7 +126,7 @@
                 float2 uv = (i.uv - 0.5 - _DeltaFootPosition.xz / _WorldSize) * _WorldSize / _FootPrintSize + 0.5;
 
                 uv = uv - 0.5;
-                uv = RotateAroundYInDegrees(float3(uv.x, 0, uv.y), _YDegress).xz;
+                uv = RotateAroundYInDegrees(uv, _YDegress);
                 uv = uv + 0.5;
                 
                 // 暂不考虑朝向

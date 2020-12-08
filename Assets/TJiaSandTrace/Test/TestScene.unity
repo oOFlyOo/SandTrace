@@ -351,7 +351,7 @@ MonoBehaviour:
   _leftFootPrintBump: {fileID: 2800000, guid: 14f828b93711e324ba7a7db5cc90bcf6, type: 3}
   _rightFootPrintBump: {fileID: 2800000, guid: 14f828b93711e324ba7a7db5cc90bcf6, type: 3}
   _footPrintBumpScale: 16
-  _footPrintSize: 1
+  _footPrintSize: 0.5
   _worldSize: 20
   _textureSize: 1024
   _footPrintAtten: 0.1
