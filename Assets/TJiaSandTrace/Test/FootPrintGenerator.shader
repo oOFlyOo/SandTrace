@@ -139,7 +139,7 @@
                 // 暂不考虑朝向
                 half4 footPrint = tex2D(_FootPrintBump, uv);
                 // 反向脚印的法线，即将xy反向，可以推导出来
-                // footPrint.rg = 1 - footPrint.rg;
+                footPrint.rg = 1 - footPrint.rg;
                 // // 左右脚互换
                 // footPrint.r = footPrint.r * _IsLeftFoot + (1 - footPrint.r) * (1 - _IsLeftFoot);
                 half2 footUVCheck = step(0.001, uv) * step(uv, 0.999);

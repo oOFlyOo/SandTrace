@@ -63,6 +63,14 @@
                 return o;
             }
 
+            fixed3 UnpackNormalmapNew(fixed4 packednormal)
+            {
+                fixed3 normal;
+                normal.xy = packednormal.xy * 2 - 1;
+                normal.z = sqrt(1 - saturate(dot(normal.xy, normal.xy)));
+                return normal;
+            }
+
             fixed4 frag(v2f i) : SV_Target
             {
                 fixed4 col = tex2D(_MainTex, i.uv);
@@ -73,6 +81,7 @@
                 float4 stepNormalCol = tex2D(_FootPrintTrace, (i.worldPos.xz - _WorldPosition.xz) / _WorldSize + 0.5);
                 // return stepNormalCol;
                 float3 stepNormal = stepNormalCol.rgb * 2 - 1;
+                // float3 stepNormal = UnpackNormalmapNew(stepNormalCol);
                 stepNormal.xy *= _FootPrintBumpScale;
 
                 normalLocal = lerp(normalLocal, stepNormal, stepNormalCol.a);
