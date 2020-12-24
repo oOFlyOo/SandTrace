@@ -23,8 +23,9 @@ public class FootPrint : MonoBehaviour
     /// <summary>
     /// 脚印法线贴图，A通道是影响范围，0为不影响
     /// </summary>
-    [SerializeField] private Texture _leftFootPrintBump;
+    [SerializeField] private Texture _footPrintBump;
     // [SerializeField] private Texture _rightFootPrintBump;
+    [SerializeField] private bool _isLeftFootPrintBump = true;
     [SerializeField] private float _footPrintBumpScale = 8; 
     
     [SerializeField] private float _footPrintSize = 1;
@@ -46,6 +47,8 @@ public class FootPrint : MonoBehaviour
     private Transform _cacheTransform;
     private Vector3 _lastWorldPosition;
 
+    private float _rootScale;
+
     private bool _isUseScrTexture = true;
 
     private void OnEnable()
@@ -60,10 +63,11 @@ public class FootPrint : MonoBehaviour
         
         _dstRenderTexture = RenderTexture.GetTemporary(_srcRenderTexture.descriptor);
         // Shader.SetGlobalTexture("_FootPrintTrace", _dstRenderTexture);
-        Shader.SetGlobalTexture("_FootPrintBump", _leftFootPrintBump);
+        Shader.SetGlobalTexture("_FootPrintBump", _footPrintBump);
 
         _cacheTransform = transform;
-        _lastWorldPosition = transform.position;
+        _lastWorldPosition = _cacheTransform.position;
+        _rootScale = _cacheTransform.lossyScale.x;
         _curDuration = 0;
     }
 
@@ -111,10 +115,9 @@ public class FootPrint : MonoBehaviour
 
     public void FootPrintActive(Vector3 worldPos,  float yDegress, Foot foot)
     {
-        yDegress = Mathf.Repeat(yDegress, 360);
         
         Shader.SetGlobalFloat("_FootPrintBumpScale", _footPrintBumpScale);
-        Shader.SetGlobalFloat("_FootPrintSize", _footPrintSize);
+        Shader.SetGlobalFloat("_FootPrintSize", _footPrintSize * _rootScale);
         Shader.SetGlobalVector("_DeltaFootPosition", worldPos - worldPos);
         Shader.SetGlobalFloat("_YDegress", yDegress);
         
@@ -131,8 +134,13 @@ public class FootPrint : MonoBehaviour
             m11 = cosa,
         };
         Shader.SetGlobalMatrix("_RotationFootPrint", matrix);
-        
-        Shader.SetGlobalInt("_IsLeftFoot", foot == Foot.Left ? 1 : 0);
+
+        var noFlipPrint = 1;
+        if ((foot == Foot.Left && !_isLeftFootPrintBump) || (foot == Foot.Right && _isLeftFootPrintBump) )
+        {
+            noFlipPrint = 0;
+        }
+        Shader.SetGlobalInt("_IsLeftFoot", noFlipPrint);
         // Shader.SetGlobalTexture("_FootPrintBump", foot == Foot.Left ? _leftFootPrintBump : _rightFootPrintBump);
         
         // Graphics.Blit(_srcRenderTexture, _dstRenderTexture, _footPrintMaterial, (int)FootPrintPass.Generator);

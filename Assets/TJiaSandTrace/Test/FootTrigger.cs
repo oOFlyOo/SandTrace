@@ -11,18 +11,21 @@ public class FootTrigger : MonoBehaviour
 
     private Transform _rootTrans;
     private Transform _cacheTrans;
+    private float _rootScale;
 
     private bool _isHit;
 
     private void Start()
     {
         _rootTrans = _footPrint.transform;
+        _rootScale = _rootTrans.lossyScale.x;
         _cacheTrans = transform;
     }
 
     private void LateUpdate()
     {
         var deltaY = _cacheTrans.position.y - _rootTrans.position.y;
+        deltaY /= _rootScale;
 
         if (!_isHit)
         {
@@ -35,7 +38,7 @@ public class FootTrigger : MonoBehaviour
             if (deltaY > _hitTerrainBias)
             {
                 _isHit = false;
-                _footPrint.FootPrintActive(transform.position, transform.eulerAngles.y + 90, _foot);
+                _footPrint.FootPrintActive(_cacheTrans.position, _cacheTrans.eulerAngles.y + 90, _foot);
             }
         }
     }

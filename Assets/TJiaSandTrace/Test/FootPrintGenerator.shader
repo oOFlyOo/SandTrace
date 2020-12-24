@@ -139,7 +139,7 @@
                 // 暂不考虑朝向
                 half4 footPrint = tex2D(_FootPrintBump, uv);
                 // 反向脚印的法线，即将xy反向，可以推导出来
-                footPrint.rg = 1 - footPrint.rg;
+                // footPrint.rg = 1 - footPrint.rg;
                 // // 左右脚互换
                 // footPrint.r = footPrint.r * _IsLeftFoot + (1 - footPrint.r) * (1 - _IsLeftFoot);
                 half2 footUVCheck = step(0.001, uv) * step(uv, 0.999);
@@ -149,6 +149,7 @@
                 // 深的位置决定最后的效果
                 half stepDeep = step(lastPrintTrace.a, col.a);
                 col.a = max(lastPrintTrace.a, col.a);
+                col.rgb = lerp(lastPrintTrace.rgb, col.rgb, stepDeep);
                 col.rgb = col.rgb * stepDeep + lastPrintTrace.rgb * (1 - stepDeep);
 
                 // // 边缘检测

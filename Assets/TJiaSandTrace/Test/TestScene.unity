@@ -348,11 +348,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0604ea5aec3f574197e5e9fc29d20dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _leftFootPrintBump: {fileID: 2800000, guid: 14f828b93711e324ba7a7db5cc90bcf6, type: 3}
+  _footPrintBump: {fileID: 2800000, guid: 114fad6301b0181498f69dbf23f352c4, type: 3}
+  _isLeftFootPrintBump: 0
   _footPrintBumpScale: 1
-  _footPrintSize: 0.5
+  _footPrintSize: 0.25
   _worldSize: 20
-  _textureSize: 1024
+  _textureSize: 10240
   _footPrintAtten: 0.1
   _duration: 0.1
   _srcRenderTexture: {fileID: 0}
@@ -583,7 +584,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0604ea5aec3f574197e5e9fc29d20dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _leftFootPrintBump: {fileID: 0}
+  _footPrintBump: {fileID: 0}
+  _isLeftFootPrintBump: 0
   _footPrintBumpScale: 8
   _footPrintSize: 1
   _worldSize: 20
