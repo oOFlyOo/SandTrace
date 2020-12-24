@@ -31,6 +31,7 @@ public class FootPrint : MonoBehaviour
     [SerializeField] private float _footPrintSize = 1;
     [SerializeField] private int _worldSize = 20;
     [SerializeField] private int _textureSize = 256;
+    [SerializeField] private bool _filterPoint;
 
     [SerializeField] private float _footPrintAtten = 0.1f;
     [SerializeField] private float _duration = 0.1f;
@@ -58,10 +59,18 @@ public class FootPrint : MonoBehaviour
         _srcRenderTexture = RenderTexture.GetTemporary(_textureSize, _textureSize, 0, RenderTextureFormat.ARGB32,
             RenderTextureReadWrite.Linear, 1);
         _srcRenderTexture.wrapMode = TextureWrapMode.Clamp;
-        _srcRenderTexture.filterMode = FilterMode.Point;
+        if (_filterPoint)
+        {
+            _srcRenderTexture.filterMode = FilterMode.Point;
+        }
         Graphics.Blit(null, _srcRenderTexture, _footPrintMaterial, (int)FootPrintPass.Clear);
         
         _dstRenderTexture = RenderTexture.GetTemporary(_srcRenderTexture.descriptor);
+        _dstRenderTexture.wrapMode = TextureWrapMode.Clamp;
+        if (_filterPoint)
+        {
+            _dstRenderTexture.filterMode = FilterMode.Point;
+        }
         // Shader.SetGlobalTexture("_FootPrintTrace", _dstRenderTexture);
         Shader.SetGlobalTexture("_FootPrintBump", _footPrintBump);
 

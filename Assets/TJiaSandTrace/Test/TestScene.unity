@@ -353,8 +353,9 @@ MonoBehaviour:
   _footPrintBumpScale: 1
   _footPrintSize: 0.25
   _worldSize: 20
-  _textureSize: 10240
-  _footPrintAtten: 0.1
+  _textureSize: 1024
+  _filterPoint: 1
+  _footPrintAtten: 0.01
   _duration: 0.1
   _srcRenderTexture: {fileID: 0}
   _dstRenderTexture: {fileID: 0}
@@ -590,6 +591,7 @@ MonoBehaviour:
   _footPrintSize: 1
   _worldSize: 20
   _textureSize: 512
+  _filterPoint: 0
   _footPrintAtten: 0.1
   _duration: 0.1
   _srcRenderTexture: {fileID: 0}
